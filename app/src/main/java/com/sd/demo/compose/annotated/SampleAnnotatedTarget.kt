@@ -33,10 +33,10 @@ class SampleAnnotatedTarget : ComponentActivity() {
 @Composable
 private fun Content(
    modifier: Modifier = Modifier,
-   content: String = "123356689-123456789",
+   content: String = "1122334455-1122334455",
 ) {
    val annotated = remember(content) {
-      content.fAnnotatedTarget("3", "6") {
+      content.fAnnotatedTarget("2", "4") {
          withStyle(SpanStyle(color = Color.Red)) {
             append(it)
          }
