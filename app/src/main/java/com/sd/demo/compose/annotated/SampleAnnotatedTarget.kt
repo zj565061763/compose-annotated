@@ -34,10 +34,9 @@ class SampleAnnotatedTarget : ComponentActivity() {
 private fun Content(
    modifier: Modifier = Modifier,
    content: String = "123456789-123456789-123456789-123456789",
-   target: String = "456",
 ) {
-   val annotated = remember(content, target) {
-      content.fAnnotatedTarget(target) {
+   val annotated = remember(content) {
+      content.fAnnotatedTarget("3", "6") {
          withStyle(SpanStyle(color = Color.Red)) {
             append(it)
          }
