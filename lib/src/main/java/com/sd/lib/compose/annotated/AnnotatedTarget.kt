@@ -14,7 +14,9 @@ fun CharSequence.fAnnotatedTarget(
 ): AnnotatedString {
    val content = this
    if (targets.isEmpty()) {
-      return buildAnnotatedString { append(content) }
+      return buildAnnotatedString {
+         normalBlock(content.toString())
+      }
    }
 
    val list = fSplit(
