@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.sd.demo.compose.annotated.theme.AppTheme
 import com.sd.lib.compose.annotated.fAnnotatedTarget
@@ -35,13 +31,7 @@ private fun Content(
    modifier: Modifier = Modifier,
    content: String = "1122334455-1122334455",
 ) {
-   val annotated = remember(content) {
-      content.fAnnotatedTarget("2", "4") {
-         withStyle(SpanStyle(color = Color.Red)) {
-            append(it)
-         }
-      }
-   }
+   val annotated = content.fAnnotatedTarget("2", "4")
 
    Column(
       modifier = modifier
