@@ -13,11 +13,13 @@ import kotlinx.coroutines.withContext
 @Composable
 fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
+   initialValue: AnnotatedString = EmptyAnnotatedString,
    ignoreCase: Boolean = true,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    return fAnnotatedTargets(
       targets = targets.toTypedArray(),
+      initialValue = initialValue,
       ignoreCase = ignoreCase,
       targetStyle = targetStyle,
    )
@@ -26,11 +28,12 @@ fun CharSequence.fAnnotatedTargets(
 @Composable
 fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
+   initialValue: AnnotatedString = EmptyAnnotatedString,
    ignoreCase: Boolean = true,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    val content = this
-   return produceState(initialValue = EmptyAnnotatedString, content, targets, ignoreCase, targetStyle) {
+   return produceState(initialValue = initialValue, content, targets, ignoreCase, targetStyle) {
       value = withContext(Dispatchers.Default) {
          content.fAnnotatedTargets(
             targets = targets,
