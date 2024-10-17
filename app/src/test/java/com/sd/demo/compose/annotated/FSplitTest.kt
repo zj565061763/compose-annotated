@@ -44,6 +44,25 @@ class FSplitTest {
       test("", content = "123")
       test("    ", content = "123")
    }
+
+   @Test
+   fun `test has content in delimiters`() {
+      fun test(
+         vararg delimiters: String,
+         content: String,
+      ) {
+         content.fSplit(delimiters = delimiters).also { result ->
+            assertEquals(1, result.size)
+            val item = result.first()
+            item.assertIsTarget(true)
+            item.assertIs(content)
+         }
+      }
+
+      test("123", content = "123")
+      test("", "123", content = "123")
+      test("456", "123", content = "123")
+   }
 }
 
 fun FSplitItem.assertIs(expected: String) {
