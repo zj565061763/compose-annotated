@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sd.demo.compose.annotated.theme.AppTheme
-import com.sd.lib.compose.annotated.fAnnotatedTarget
+import com.sd.lib.compose.annotated.fAnnotatedTargets
 
-class SampleAnnotatedTarget : ComponentActivity() {
+class SampleAnnotatedTargets : ComponentActivity() {
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ private fun Content(
    modifier: Modifier = Modifier,
    content: String = "1122334455-1122334455",
 ) {
-   val annotated = content.fAnnotatedTarget("2", "4")
+   val annotated = content.fAnnotatedTargets("2", "4")
 
    Column(
       modifier = modifier

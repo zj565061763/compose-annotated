@@ -9,24 +9,24 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
 @Composable
-fun CharSequence.fAnnotatedTarget(
+fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
-   return fAnnotatedTarget(
+   return fAnnotatedTargets(
       targets = targets.toTypedArray(),
       targetStyle = targetStyle,
    )
 }
 
 @Composable
-fun CharSequence.fAnnotatedTarget(
+fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    val content = this
    return remember(content, targets) {
-      content.fAnnotatedTarget(
+      content.fAnnotatedTargets(
          targets = targets,
          ignoreCase = true,
          targetBlock = {
@@ -41,7 +41,7 @@ fun CharSequence.fAnnotatedTarget(
 /**
  * 根据[targets]拆分构建[AnnotatedString]，[targets]部分调用[targetBlock]，非[targets]部分调用[normalBlock]
  */
-fun CharSequence.fAnnotatedTarget(
+fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
    ignoreCase: Boolean = false,
    normalBlock: AnnotatedString.Builder.(String) -> Unit = { append(it) },
