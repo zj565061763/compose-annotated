@@ -18,6 +18,17 @@ class FSplitTest {
    }
 
    @Test
+   fun `test blank content`() {
+      val content = "    "
+      content.fSplit("123").also { result ->
+         assertEquals(1, result.size)
+         val item = result.first()
+         item.assertIsTarget(false)
+         item.assertIs(content)
+      }
+   }
+
+   @Test
    fun `test empty delimiters`() {
       val content = "123"
       content.fSplit("").also { result ->

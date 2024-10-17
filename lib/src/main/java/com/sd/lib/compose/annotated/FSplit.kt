@@ -6,7 +6,6 @@ fun CharSequence.fSplit(
 ): List<FSplitItem> {
    val content = this
    val contentString = content.toString()
-
    if (contentString.isBlank()) {
       return listOf(FSplitItem(contentString))
    }
