@@ -11,7 +11,7 @@ fun CharSequence.fSplit(
    }
 
    var hasContent = false
-   val legalDelimiters = delimiters.filter {
+   var legalDelimiters = delimiters.filter {
       if (it == contentString) hasContent = true
       it.isNotBlank()
    }
@@ -23,6 +23,8 @@ fun CharSequence.fSplit(
    if (hasContent) {
       return listOf(FSplitItem(contentString, isTarget = true))
    }
+
+   legalDelimiters = legalDelimiters.distinct()
 
    val list = mutableListOf<FSplitItem>()
    var preItem: IntRangeWithDelimiter? = null

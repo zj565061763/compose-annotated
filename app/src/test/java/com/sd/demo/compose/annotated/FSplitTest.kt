@@ -8,7 +8,7 @@ import org.junit.Test
 class FSplitTest {
 
    @Test
-   fun test() {
+   fun `test single delimiter`() {
       val content = "12345-12345"
       content.fSplit("1").also { result ->
          assertEquals(content, result.join())
@@ -17,6 +17,23 @@ class FSplitTest {
          result[1].assertIs("2345-").assertIsTarget(false)
          result[2].assertIs("1").assertIsTarget(true)
          result[3].assertIs("2345").assertIsTarget(false)
+      }
+   }
+
+   @Test
+   fun `test multi delimiter`() {
+      val content = "12345-12345"
+      content.fSplit("1", "3").also { result ->
+         assertEquals(content, result.join())
+         assertEquals(8, result.size)
+         result[0].assertIs("1").assertIsTarget(true)
+         result[1].assertIs("2").assertIsTarget(false)
+         result[2].assertIs("3").assertIsTarget(true)
+         result[3].assertIs("45-").assertIsTarget(false)
+         result[4].assertIs("1").assertIsTarget(true)
+         result[5].assertIs("2").assertIsTarget(false)
+         result[6].assertIs("3").assertIsTarget(true)
+         result[7].assertIs("45").assertIsTarget(false)
       }
    }
 
