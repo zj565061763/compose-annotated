@@ -8,49 +8,48 @@ import org.junit.Test
 class FSplitTest {
    @Test
    fun `test empty content`() {
-      val content = ""
-      content.fSplit("123").also { result ->
-         assertEquals(1, result.size)
-         val item = result.first()
-         item.assertIsTarget(false)
-         item.assertIs(content)
+      fun test(content: String) {
+         content.fSplit("123").also { result ->
+            assertEquals(1, result.size)
+            val item = result.first()
+            item.assertIsTarget(false)
+            item.assertIs(content)
+         }
       }
-   }
 
-   @Test
-   fun `test blank content`() {
-      val content = "    "
-      content.fSplit("123").also { result ->
-         assertEquals(1, result.size)
-         val item = result.first()
-         item.assertIsTarget(false)
-         item.assertIs(content)
-      }
+      test(content = "")
+      test(content = "    ")
    }
 
    @Test
    fun `test empty delimiters`() {
-      val content = "123"
-      content.fSplit("").also { result ->
-         assertEquals(1, result.size)
-         val item = result.first()
-         item.assertIsTarget(false)
-         item.assertIs(content)
+      fun test(
+         vararg delimiters: String,
+         content: String,
+      ) {
+         content.fSplit(delimiters = delimiters).also { result ->
+            assertEquals(1, result.size)
+            val item = result.first()
+            item.assertIsTarget(false)
+            item.assertIs(content)
+         }
+         content.fSplit(delimiters = delimiters).also { result ->
+            assertEquals(1, result.size)
+            val item = result.first()
+            item.assertIsTarget(false)
+            item.assertIs(content)
+         }
       }
 
-      content.fSplit("", "").also { result ->
-         assertEquals(1, result.size)
-         val item = result.first()
-         item.assertIsTarget(false)
-         item.assertIs(content)
-      }
+      test("", content = "123")
+      test("    ", content = "123")
    }
 }
 
-private fun FSplitItem.assertIs(expected: String) {
+fun FSplitItem.assertIs(expected: String) {
    assertEquals(expected, content)
 }
 
-private fun FSplitItem.assertIsTarget(expected: Boolean) {
+fun FSplitItem.assertIsTarget(expected: Boolean) {
    assertEquals(expected, isTarget)
 }
