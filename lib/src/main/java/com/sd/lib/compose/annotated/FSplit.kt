@@ -4,13 +4,31 @@ fun CharSequence.fSplit(
    vararg delimiters: String,
    ignoreCase: Boolean = false,
 ): List<FSplitItem> {
-   val legalDelimiters = delimiters.filter { it.isNotBlank() }
-   if (legalDelimiters.isEmpty()) return listOf(FSplitItem(this.toString()))
+   val content = this
+   val contentString = content.toString()
+
+   if (contentString.isBlank()) {
+      return listOf(FSplitItem(contentString))
+   }
+
+   var hasContent = false
+   val legalDelimiters = delimiters.filter {
+      if (it == contentString) hasContent = true
+      it.isNotBlank()
+   }
+
+   if (legalDelimiters.isEmpty()) {
+      return listOf(FSplitItem(contentString))
+   }
+
+   if (hasContent) {
+      return listOf(FSplitItem(contentString, isTarget = true))
+   }
 
    val list = mutableListOf<FSplitItem>()
    var preItem: IntRangeWithDelimiter? = null
 
-   rangesDelimitedBy(
+   content.rangesDelimitedBy(
       delimiters = legalDelimiters.toTypedArray(),
       ignoreCase = ignoreCase,
    ).map { item ->
@@ -20,7 +38,7 @@ fun CharSequence.fSplit(
          }
       }
 
-      val substring = substring(item.intRange)
+      val substring = content.substring(item.intRange)
       if (substring.isNotEmpty()) {
          list.add(FSplitItem(substring))
       }
@@ -34,7 +52,9 @@ fun CharSequence.fSplit(
 data class FSplitItem(
    val content: String,
    val isTarget: Boolean = false,
-)
+) {
+   override fun toString(): String = content
+}
 
 private fun CharSequence.rangesDelimitedBy(
    delimiters: Array<out String>,
