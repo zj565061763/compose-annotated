@@ -4,12 +4,14 @@ fun CharSequence.fSplit(
    vararg delimiters: String,
    ignoreCase: Boolean = false,
 ): List<FSplitItem> {
+   val legalDelimiters = delimiters.filter { it.isNotBlank() }
+   if (legalDelimiters.isEmpty()) return listOf(FSplitItem(this.toString()))
 
    val list = mutableListOf<FSplitItem>()
    var preItem: IntRangeWithDelimiter? = null
 
    rangesDelimitedBy(
-      delimiters = delimiters,
+      delimiters = legalDelimiters.toTypedArray(),
       ignoreCase = ignoreCase,
    ).map { item ->
       preItem?.let {
