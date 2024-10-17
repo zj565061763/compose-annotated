@@ -23,17 +23,16 @@ class FSplitTest {
    @Test
    fun `test multi delimiter`() {
       val content = "12345-12345"
-      content.fSplit("1", "3").also { result ->
+      content.fSplit("1", "5").also { result ->
          assertEquals(content, result.join())
-         assertEquals(8, result.size)
+         assertEquals(7, result.size)
          result[0].assertIs("1").assertIsTarget(true)
-         result[1].assertIs("2").assertIsTarget(false)
-         result[2].assertIs("3").assertIsTarget(true)
-         result[3].assertIs("45-").assertIsTarget(false)
+         result[1].assertIs("234").assertIsTarget(false)
+         result[2].assertIs("5").assertIsTarget(true)
+         result[3].assertIs("-").assertIsTarget(false)
          result[4].assertIs("1").assertIsTarget(true)
-         result[5].assertIs("2").assertIsTarget(false)
-         result[6].assertIs("3").assertIsTarget(true)
-         result[7].assertIs("45").assertIsTarget(false)
+         result[5].assertIs("234").assertIsTarget(false)
+         result[6].assertIs("5").assertIsTarget(true)
       }
    }
 
