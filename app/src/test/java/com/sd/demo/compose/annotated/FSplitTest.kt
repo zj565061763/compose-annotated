@@ -6,6 +6,20 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FSplitTest {
+
+   @Test
+   fun test() {
+      val content = "12345-12345"
+      content.fSplit("1").also { result ->
+         assertEquals(content, result.join())
+         assertEquals(4, result.size)
+         result[0].assertIs("1").assertIsTarget(true)
+         result[1].assertIs("2345-").assertIsTarget(false)
+         result[2].assertIs("1").assertIsTarget(true)
+         result[3].assertIs("2345").assertIsTarget(false)
+      }
+   }
+
    @Test
    fun `test empty content`() {
       fun test(content: String) {
@@ -65,10 +79,14 @@ class FSplitTest {
    }
 }
 
-fun FSplitItem.assertIs(expected: String) {
+fun FSplitItem.assertIs(expected: String) = apply {
    assertEquals(expected, content)
 }
 
-fun FSplitItem.assertIsTarget(expected: Boolean) {
+fun FSplitItem.assertIsTarget(expected: Boolean) = apply {
    assertEquals(expected, isTarget)
+}
+
+fun List<FSplitItem>.join(): String {
+   return joinToString("") { it.toString() }
 }
