@@ -1,20 +1,24 @@
 package com.sd.lib.compose.annotated
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
+   ignoreCase: Boolean = true,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    return fAnnotatedTargets(
       targets = targets.toTypedArray(),
+      ignoreCase = ignoreCase,
       targetStyle = targetStyle,
    )
 }
@@ -22,28 +26,31 @@ fun CharSequence.fAnnotatedTargets(
 @Composable
 fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
+   ignoreCase: Boolean = true,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    val content = this
-   return remember(content, targets) {
-      content.fAnnotatedTargets(
-         targets = targets,
-         ignoreCase = true,
-         targetBlock = {
-            withStyle(targetStyle) {
-               append(it)
-            }
-         },
-      )
-   }
+   return produceState(initialValue = EmptyAnnotatedString, content, targets, ignoreCase, targetStyle) {
+      value = withContext(Dispatchers.Default) {
+         content.fAnnotatedTargets(
+            targets = targets,
+            ignoreCase = ignoreCase,
+            targetBlock = {
+               withStyle(targetStyle) {
+                  append(it)
+               }
+            },
+         )
+      }
+   }.value
 }
 
 /**
  * 根据[targets]拆分构建[AnnotatedString]，[targets]部分调用[targetBlock]，非[targets]部分调用[normalBlock]
  */
-fun CharSequence.fAnnotatedTargets(
+inline fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
-   ignoreCase: Boolean = false,
+   ignoreCase: Boolean = true,
    normalBlock: AnnotatedString.Builder.(String) -> Unit = { append(it) },
    targetBlock: AnnotatedString.Builder.(String) -> Unit,
 ): AnnotatedString {
@@ -72,3 +79,5 @@ fun CharSequence.fAnnotatedTargets(
       }
    }
 }
+
+private val EmptyAnnotatedString = AnnotatedString("")
