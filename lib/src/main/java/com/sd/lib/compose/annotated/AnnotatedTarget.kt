@@ -12,13 +12,18 @@ fun CharSequence.fAnnotatedTarget(
    normalBlock: AnnotatedString.Builder.(String) -> Unit = { append(it) },
    targetBlock: AnnotatedString.Builder.(String) -> Unit,
 ): AnnotatedString {
+   val content = this
+   if (targets.isEmpty()) {
+      return buildAnnotatedString { append(content) }
+   }
+
    val list = fSplit(
       delimiters = targets,
       ignoreCase = ignoreCase,
    )
    return buildAnnotatedString {
       if (list.isEmpty()) {
-         append(this@fAnnotatedTarget)
+         append(content)
       } else {
          list.forEach { item ->
             if (item.isTarget) {
