@@ -1,5 +1,12 @@
 package com.sd.lib.compose.annotated
 
+data class FSplitItem(
+   val content: String,
+   val isTarget: Boolean = false,
+) {
+   override fun toString(): String = content
+}
+
 fun CharSequence.fSplit(
    vararg delimiters: String,
    ignoreCase: Boolean = false,
@@ -48,13 +55,6 @@ fun CharSequence.fSplit(
    }.toList()
 
    return list
-}
-
-data class FSplitItem(
-   val content: String,
-   val isTarget: Boolean = false,
-) {
-   override fun toString(): String = content
 }
 
 private fun CharSequence.rangesDelimitedBy(
