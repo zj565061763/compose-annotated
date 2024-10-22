@@ -35,7 +35,7 @@ fun CharSequence.fAnnotatedTargets(
    val initialValue = remember(content) { AnnotatedString(content.toString()) }
    if (targets.isEmpty()) return initialValue
 
-   val list by fSplitState(delimiters = targets, ignoreCase = ignoreCase)
+   val list by content.fSplitState(delimiters = targets, ignoreCase = ignoreCase)
    if (list.isEmpty()) return initialValue
 
    return produceState(initialValue = initialValue, list, targetStyle) {
