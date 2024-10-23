@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -31,6 +32,38 @@ fun CharSequence.fAnnotatedTargets(
    ignoreCase: Boolean = false,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
+   return fAnnotatedTargets(
+      targets = targets,
+      ignoreCase = ignoreCase,
+      onTarget = { target ->
+         withStyle(targetStyle) {
+            append(target)
+         }
+      },
+   )
+}
+
+@Composable
+fun CharSequence.fAnnotatedTargets(
+   vararg targets: String,
+   ignoreCase: Boolean = false,
+   onTarget: AnnotatedString.Builder.(String) -> Unit,
+): AnnotatedString {
+   return fAnnotatedTargets(
+      targets = targets.toList(),
+      ignoreCase = ignoreCase,
+      onTarget = onTarget,
+   )
+}
+
+@Composable
+fun CharSequence.fAnnotatedTargets(
+   targets: List<String>,
+   ignoreCase: Boolean = false,
+   onTarget: AnnotatedString.Builder.(String) -> Unit,
+): AnnotatedString {
+   val onTargetUpdated by rememberUpdatedState(onTarget)
+
    val content = this
    val initialValue = remember(content) { AnnotatedString(content.toString()) }
    if (targets.isEmpty()) return initialValue
@@ -38,14 +71,12 @@ fun CharSequence.fAnnotatedTargets(
    val list by content.fSplitState(delimiters = targets, ignoreCase = ignoreCase)
    if (list.isEmpty()) return initialValue
 
-   return produceState(initialValue = initialValue, list, targetStyle) {
+   return produceState(initialValue = initialValue, list) {
       value = withContext(Dispatchers.Default) {
          buildAnnotatedString {
             list.forEach { item ->
                if (item.isTarget) {
-                  withStyle(targetStyle) {
-                     append(item.content)
-                  }
+                  onTargetUpdated(item.content)
                } else {
                   append(item.content)
                }
