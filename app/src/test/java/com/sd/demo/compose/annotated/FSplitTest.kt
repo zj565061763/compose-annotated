@@ -37,6 +37,21 @@ class FSplitTest {
    }
 
    @Test
+   fun `test case`() {
+      val content = "aBCDCBba"
+      content.fSplit("b", ignoreCase = true).also { result ->
+         assertEquals(content, result.join())
+         assertEquals(6, result.size)
+         result[0].assertIs("a").assertIsTarget(false)
+         result[1].assertIs("B").assertIsTarget(true)
+         result[2].assertIs("CDC").assertIsTarget(false)
+         result[3].assertIs("B").assertIsTarget(true)
+         result[4].assertIs("b").assertIsTarget(true)
+         result[5].assertIs("a").assertIsTarget(false)
+      }
+   }
+
+   @Test
    fun `test empty content`() {
       fun test(content: String) {
          content.fSplit("123").also { result ->

@@ -52,7 +52,10 @@ fun CharSequence.fSplit(
    ).map { item ->
       preItem?.let {
          if (it.delimiter.isNotEmpty()) {
-            list.add(FSplitItem(it.delimiter, isTarget = true))
+            val startIndex = it.intRange.last + 1
+            val endIndex = startIndex + it.delimiter.length
+            val substring = content.substring(startIndex, endIndex)
+            list.add(FSplitItem(substring, isTarget = true))
          }
       }
 
