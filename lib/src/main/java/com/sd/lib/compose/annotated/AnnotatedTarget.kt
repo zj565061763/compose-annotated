@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun CharSequence.fAnnotatedTargets(
    vararg targets: String,
-   ignoreCase: Boolean = true,
+   ignoreCase: Boolean = false,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    return fAnnotatedTargets(
@@ -28,7 +28,7 @@ fun CharSequence.fAnnotatedTargets(
 @Composable
 fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
-   ignoreCase: Boolean = true,
+   ignoreCase: Boolean = false,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
    val content = this
