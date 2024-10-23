@@ -47,7 +47,7 @@ fun CharSequence.fSplit(
    var preItem: IntRangeWithDelimiter? = null
 
    content.rangesDelimitedBy(
-      delimiters = legalDelimiters.toTypedArray(),
+      delimiters = legalDelimiters,
       ignoreCase = ignoreCase,
    ).map { item ->
       preItem?.let {
@@ -71,16 +71,14 @@ fun CharSequence.fSplit(
 }
 
 private fun CharSequence.rangesDelimitedBy(
-   delimiters: Array<out String>,
+   delimiters: List<String>,
    startIndex: Int = 0,
    ignoreCase: Boolean = false,
    limit: Int = 0,
 ): Sequence<IntRangeWithDelimiter> {
    require(limit >= 0) { "Limit must be non-negative, but was $limit" }
-   val delimitersList = delimiters.asList()
-
    return DelimitedRangesSequence(this, startIndex, limit) { currentIndex ->
-      val find = findAnyOf(delimitersList, currentIndex, ignoreCase = ignoreCase, last = false)
+      val find = findAnyOf(delimiters, currentIndex, ignoreCase = ignoreCase, last = false)
       find?.let {
          MatchResult(
             index = it.first,
