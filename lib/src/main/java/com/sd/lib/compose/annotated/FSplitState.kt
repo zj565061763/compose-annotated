@@ -8,25 +8,14 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CharSequence.fSplitState(
-   vararg delimiters: String,
-   ignoreCase: Boolean = false,
-): State<List<FSplitItem>> {
-   return fSplitState(
-      delimiters = delimiters.toList(),
-      ignoreCase = ignoreCase,
-   )
-}
-
-@Composable
-fun CharSequence.fSplitState(
-   delimiters: List<String>,
+   targets: List<String>,
    ignoreCase: Boolean = false,
 ): State<List<FSplitItem>> {
    val content = this
-   return produceState(initialValue = emptyList(), content, delimiters, ignoreCase) {
+   return produceState(initialValue = emptyList(), content, targets, ignoreCase) {
       value = withContext(Dispatchers.Default) {
          content.fSplit(
-            delimiters = delimiters,
+            delimiters = targets,
             ignoreCase = ignoreCase,
          )
       }

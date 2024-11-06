@@ -15,19 +15,6 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CharSequence.fAnnotatedTargets(
-   vararg targets: String,
-   ignoreCase: Boolean = false,
-   targetStyle: SpanStyle = SpanStyle(Color.Red),
-): AnnotatedString {
-   return fAnnotatedTargets(
-      targets = targets.toList(),
-      ignoreCase = ignoreCase,
-      targetStyle = targetStyle,
-   )
-}
-
-@Composable
-fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
    ignoreCase: Boolean = false,
    targetStyle: SpanStyle = SpanStyle(Color.Red),
@@ -45,19 +32,6 @@ fun CharSequence.fAnnotatedTargets(
 
 @Composable
 fun CharSequence.fAnnotatedTargets(
-   vararg targets: String,
-   ignoreCase: Boolean = false,
-   onTarget: AnnotatedString.Builder.(String) -> Unit,
-): AnnotatedString {
-   return fAnnotatedTargets(
-      targets = targets.toList(),
-      ignoreCase = ignoreCase,
-      onTarget = onTarget,
-   )
-}
-
-@Composable
-fun CharSequence.fAnnotatedTargets(
    targets: List<String>,
    ignoreCase: Boolean = false,
    onTarget: AnnotatedString.Builder.(String) -> Unit,
@@ -68,7 +42,7 @@ fun CharSequence.fAnnotatedTargets(
    val initialValue = remember(content) { AnnotatedString(content.toString()) }
    if (targets.isEmpty()) return initialValue
 
-   val list by content.fSplitState(delimiters = targets, ignoreCase = ignoreCase)
+   val list by content.fSplitState(targets = targets, ignoreCase = ignoreCase)
    if (list.isEmpty()) return initialValue
 
    return produceState(initialValue = initialValue, list) {

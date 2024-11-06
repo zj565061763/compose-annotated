@@ -31,7 +31,7 @@ private fun Content(
    modifier: Modifier = Modifier,
    content: String = "1122334455-1122334455",
 ) {
-   val annotated = content.fAnnotatedTargets("2", "4")
+   val annotated = content.fAnnotatedTargets(listOf("2", "4"))
 
    Column(
       modifier = modifier
