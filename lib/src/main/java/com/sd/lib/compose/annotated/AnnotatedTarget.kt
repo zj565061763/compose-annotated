@@ -1,6 +1,7 @@
 package com.sd.lib.compose.annotated
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -58,4 +59,20 @@ fun CharSequence.fAnnotatedTargets(
          }
       }
    }.value
+}
+
+@Composable
+fun CharSequence.fSplitState(
+   targets: List<String>,
+   ignoreCase: Boolean = false,
+): State<List<FSplitItem>> {
+   val content = this
+   return produceState(initialValue = emptyList(), content, targets, ignoreCase) {
+      value = withContext(Dispatchers.Default) {
+         content.fSplit(
+            delimiters = targets,
+            ignoreCase = ignoreCase,
+         )
+      }
+   }
 }
