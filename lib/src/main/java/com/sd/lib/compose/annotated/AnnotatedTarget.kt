@@ -37,8 +37,6 @@ fun CharSequence.fAnnotatedTargets(
    ignoreCase: Boolean = false,
    onTarget: AnnotatedString.Builder.(String) -> Unit,
 ): AnnotatedString {
-   val onTargetUpdated by rememberUpdatedState(onTarget)
-
    val content = this
    val initialValue = remember(content) { AnnotatedString(content.toString()) }
    if (targets.isEmpty()) return initialValue
@@ -46,6 +44,7 @@ fun CharSequence.fAnnotatedTargets(
    val list by content.fSplitState(targets = targets, ignoreCase = ignoreCase)
    if (list.isEmpty()) return initialValue
 
+   val onTargetUpdated by rememberUpdatedState(onTarget)
    return produceState(initialValue = initialValue, list) {
       value = withContext(Dispatchers.Default) {
          buildAnnotatedString {
