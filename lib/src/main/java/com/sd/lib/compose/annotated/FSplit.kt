@@ -8,6 +8,16 @@ data class FSplitItem(
 }
 
 fun CharSequence.fSplit(
+   vararg delimiters: String,
+   ignoreCase: Boolean = false,
+): List<FSplitItem> {
+   return fSplit(
+      delimiters = delimiters.toList(),
+      ignoreCase = ignoreCase,
+   )
+}
+
+fun CharSequence.fSplit(
    delimiters: List<String>,
    ignoreCase: Boolean = false,
 ): List<FSplitItem> {
