@@ -27,27 +27,21 @@ fun CharSequence.fSplit(
       return listOf(FSplitItem(contentString))
    }
 
-   var hasContent = false
-   var legalDelimiters = delimiters.filter {
-      if (it == contentString) hasContent = true
-      it.isNotBlank()
+   val safeDelimiters = mutableSetOf<String>()
+   for (item in delimiters) {
+      if (item == contentString) return listOf(FSplitItem(contentString, isTarget = true))
+      if (item.isNotBlank()) safeDelimiters.add(item)
    }
 
-   if (legalDelimiters.isEmpty()) {
+   if (safeDelimiters.isEmpty()) {
       return listOf(FSplitItem(contentString))
    }
-
-   if (hasContent) {
-      return listOf(FSplitItem(contentString, isTarget = true))
-   }
-
-   legalDelimiters = legalDelimiters.distinct()
 
    val list = mutableListOf<FSplitItem>()
    var preItem: IntRangeWithDelimiter? = null
 
    content.rangesDelimitedBy(
-      delimiters = legalDelimiters,
+      delimiters = safeDelimiters.toTypedArray(),
       ignoreCase = ignoreCase,
    ).map { item ->
       preItem?.let {
@@ -71,7 +65,7 @@ fun CharSequence.fSplit(
 }
 
 private fun CharSequence.rangesDelimitedBy(
-   delimiters: List<String>,
+   delimiters: Array<String>,
    startIndex: Int = 0,
    ignoreCase: Boolean = false,
    limit: Int = 0,
@@ -158,7 +152,7 @@ private class DelimitedRangesSequence(
    }
 }
 
-private fun CharSequence.findAnyOf(strings: Collection<String>, startIndex: Int, ignoreCase: Boolean, last: Boolean): Pair<Int, String>? {
+private fun CharSequence.findAnyOf(strings: Array<String>, startIndex: Int, ignoreCase: Boolean, last: Boolean): Pair<Int, String>? {
    if (!ignoreCase && strings.size == 1) {
       val string = strings.single()
       val index = if (!last) indexOf(string, startIndex) else lastIndexOf(string, startIndex)
