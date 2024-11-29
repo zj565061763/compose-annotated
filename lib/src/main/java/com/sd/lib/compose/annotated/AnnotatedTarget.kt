@@ -6,6 +6,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,25 +38,45 @@ fun CharSequence.fAnnotatedTargets(
    onTarget: AnnotatedString.Builder.(String) -> Unit,
 ): AnnotatedString {
    val content = this
+   if (LocalInspectionMode.current) {
+      return content.parseToAnnotatedString(
+         targets = targets,
+         ignoreCase = ignoreCase,
+         onTarget = onTarget,
+      )
+   }
+
    val initialValue = remember(content) { AnnotatedString(content.toString()) }
    if (targets.isEmpty()) return initialValue
 
    val onTargetUpdated by rememberUpdatedState(onTarget)
    return produceState(initialValue = initialValue, content, targets, ignoreCase) {
       value = withContext(Dispatchers.Default) {
-         val list = content.fSplit(
-            delimiters = targets,
+         content.parseToAnnotatedString(
+            targets = targets,
             ignoreCase = ignoreCase,
+            onTarget = { onTargetUpdated(it) },
          )
-         buildAnnotatedString {
-            list.forEach { item ->
-               if (item.isTarget) {
-                  onTargetUpdated(item.content)
-               } else {
-                  append(item.content)
-               }
-            }
-         }
       }
    }.value
+}
+
+private fun CharSequence.parseToAnnotatedString(
+   targets: List<String>,
+   ignoreCase: Boolean = false,
+   onTarget: AnnotatedString.Builder.(String) -> Unit,
+): AnnotatedString {
+   val list = fSplit(
+      delimiters = targets,
+      ignoreCase = ignoreCase,
+   )
+   return buildAnnotatedString {
+      list.forEach { item ->
+         if (item.isTarget) {
+            onTarget(item.content)
+         } else {
+            append(item.content)
+         }
+      }
+   }
 }
