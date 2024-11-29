@@ -66,16 +66,17 @@ private fun CharSequence.parseToAnnotatedString(
    ignoreCase: Boolean = false,
    onTarget: AnnotatedString.Builder.(String) -> Unit,
 ): AnnotatedString {
-   val list = fSplit(
+   return fSplit(
       delimiters = targets,
       ignoreCase = ignoreCase,
-   )
-   return buildAnnotatedString {
-      list.forEach { item ->
-         if (item.isTarget) {
-            onTarget(item.content)
-         } else {
-            append(item.content)
+   ).let { list ->
+      buildAnnotatedString {
+         list.forEach { item ->
+            if (item.isTarget) {
+               onTarget(item.content)
+            } else {
+               append(item.content)
+            }
          }
       }
    }
