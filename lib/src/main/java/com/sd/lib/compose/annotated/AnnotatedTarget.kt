@@ -9,10 +9,12 @@ import androidx.compose.ui.text.SpanStyle
 @Composable
 fun CharSequence.fAnnotatedWithTarget(
   target: List<String>,
+  ignoreCase: Boolean = false,
   targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
   return fAnnotatedWithTarget(
     target = target,
+    ignoreCase = ignoreCase,
     onTarget = { result ->
       addStyle(targetStyle, result.range.first, result.range.last + 1)
     },
