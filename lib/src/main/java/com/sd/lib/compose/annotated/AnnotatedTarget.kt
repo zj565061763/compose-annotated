@@ -55,9 +55,9 @@ fun CharSequence.fAnnotatedTargets(
     )
   }
 
+  val onTargetUpdated by rememberUpdatedState(onTarget)
   return if (async) {
     val initialValue = remember(input) { AnnotatedString(input.toString()) }
-    val onTargetUpdated by rememberUpdatedState(onTarget)
     produceState(initialValue = initialValue, input, regex) {
       value = withContext(Dispatchers.Default) {
         input.parseToAnnotatedString(
@@ -67,10 +67,12 @@ fun CharSequence.fAnnotatedTargets(
       }
     }.value
   } else {
-    input.parseToAnnotatedString(
-      regex = regex,
-      onTarget = onTarget,
-    )
+    remember(input, regex) {
+      input.parseToAnnotatedString(
+        regex = regex,
+        onTarget = { onTargetUpdated(it) },
+      )
+    }
   }
 }
 
