@@ -32,13 +32,13 @@ fun CharSequence.fAnnotatedTargets(
 fun CharSequence.fAnnotatedTargets(
   targets: List<String>,
   ignoreCase: Boolean = false,
-  async: Boolean = false,
   onTarget: AnnotatedString.Builder.(MatchResult) -> Unit,
 ): AnnotatedString {
   val input = this
-  if (input.isEmpty() || targets.isEmpty()) {
-    return remember(input) { AnnotatedString(input.toString()) }
-  }
+  val initialValue = remember(input) { AnnotatedString(input.toString()) }
+
+  if (input.isEmpty()) return initialValue
+  if (targets.isEmpty()) return initialValue
 
   val regex = remember(targets, ignoreCase) {
     if (ignoreCase) {
@@ -56,24 +56,14 @@ fun CharSequence.fAnnotatedTargets(
   }
 
   val onTargetUpdated by rememberUpdatedState(onTarget)
-  return if (async) {
-    val initialValue = remember(input) { AnnotatedString(input.toString()) }
-    produceState(initialValue = initialValue, input, regex) {
-      value = withContext(Dispatchers.Default) {
-        input.parseToAnnotatedString(
-          regex = regex,
-          onTarget = { onTargetUpdated(it) },
-        )
-      }
-    }.value
-  } else {
-    remember(input, regex) {
+  return produceState(initialValue = initialValue, input, regex) {
+    value = withContext(Dispatchers.Default) {
       input.parseToAnnotatedString(
         regex = regex,
         onTarget = { onTargetUpdated(it) },
       )
     }
-  }
+  }.value
 }
 
 private fun CharSequence.parseToAnnotatedString(
