@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SampleAnnotatedTargets" />
+        <activity android:name=".Sample" />
 
     </application>
 
