@@ -17,35 +17,35 @@ import com.sd.lib.compose.annotated.fAnnotatedTargets
 
 class SampleAnnotatedTargets : ComponentActivity() {
 
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContent {
-         AppTheme {
-            Content()
-         }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      AppTheme {
+        Content()
       }
-   }
+    }
+  }
 }
 
 @Composable
 private fun Content(
-   modifier: Modifier = Modifier,
-   content: String = "1122334455-1122334455",
+  modifier: Modifier = Modifier,
+  content: String = "1122334455-1122334455",
 ) {
-   val annotated = content.fAnnotatedTargets(listOf("2", "4"))
+  val annotated = content.fAnnotatedTargets(listOf("2", "4"))
 
-   Column(
-      modifier = modifier
-         .fillMaxSize()
-         .padding(10.dp),
-      horizontalAlignment = Alignment.CenterHorizontally,
-   ) {
-      Text(text = annotated)
-   }
+  Column(
+    modifier = modifier
+      .fillMaxSize()
+      .padding(10.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    Text(text = annotated)
+  }
 }
 
 @Preview
 @Composable
 private fun Preview() {
-   Content()
+  Content()
 }

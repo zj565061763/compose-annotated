@@ -10,74 +10,79 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
 fun CharSequence.fAnnotatedTargets(
-   targets: List<String>,
-   ignoreCase: Boolean = false,
-   targetStyle: SpanStyle = SpanStyle(Color.Red),
+  targets: List<String>,
+  ignoreCase: Boolean = false,
+  targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
-   return fAnnotatedTargets(
-      targets = targets,
-      ignoreCase = ignoreCase,
-      onTarget = { target ->
-         withStyle(targetStyle) {
-            append(target)
-         }
-      },
-   )
+  return fAnnotatedTargets(
+    targets = targets,
+    ignoreCase = ignoreCase,
+    onTarget = { result ->
+      addStyle(targetStyle, result.range.first, result.range.last + 1)
+    },
+  )
 }
 
 @Composable
 fun CharSequence.fAnnotatedTargets(
-   targets: List<String>,
-   ignoreCase: Boolean = false,
-   onTarget: AnnotatedString.Builder.(String) -> Unit,
+  targets: List<String>,
+  ignoreCase: Boolean = false,
+  async: Boolean = false,
+  onTarget: AnnotatedString.Builder.(MatchResult) -> Unit,
 ): AnnotatedString {
-   val content = this
-   if (LocalInspectionMode.current) {
-      return content.parseToAnnotatedString(
-         targets = targets,
-         ignoreCase = ignoreCase,
-         onTarget = onTarget,
-      )
-   }
+  val content = this
+  if (content.isEmpty() || targets.isEmpty()) {
+    return remember(content) { AnnotatedString(content.toString()) }
+  }
 
-   val initialValue = remember(content) { AnnotatedString(content.toString()) }
-   if (targets.isEmpty()) return initialValue
+  val regex = remember(targets, ignoreCase) {
+    if (ignoreCase) {
+      Regex(targets.joinToString(separator = "|"), RegexOption.IGNORE_CASE)
+    } else {
+      Regex(targets.joinToString(separator = "|"))
+    }
+  }
 
-   val onTargetUpdated by rememberUpdatedState(onTarget)
-   return produceState(initialValue = initialValue, content, targets, ignoreCase) {
+  if (LocalInspectionMode.current) {
+    return content.parseToAnnotatedString(
+      regex = regex,
+      onTarget = onTarget,
+    )
+  }
+
+  return if (async) {
+    val initialValue = remember(content) { AnnotatedString(content.toString()) }
+    val onTargetUpdated by rememberUpdatedState(onTarget)
+    produceState(initialValue = initialValue, content, regex) {
       value = withContext(Dispatchers.Default) {
-         content.parseToAnnotatedString(
-            targets = targets,
-            ignoreCase = ignoreCase,
-            onTarget = { onTargetUpdated(it) },
-         )
+        content.parseToAnnotatedString(
+          regex = regex,
+          onTarget = { onTargetUpdated(it) },
+        )
       }
-   }.value
+    }.value
+  } else {
+    content.parseToAnnotatedString(
+      regex = regex,
+      onTarget = onTarget,
+    )
+  }
 }
 
 private fun CharSequence.parseToAnnotatedString(
-   targets: List<String>,
-   ignoreCase: Boolean = false,
-   onTarget: AnnotatedString.Builder.(String) -> Unit,
+  regex: Regex,
+  onTarget: AnnotatedString.Builder.(MatchResult) -> Unit,
 ): AnnotatedString {
-   return fSplit(
-      delimiters = targets,
-      ignoreCase = ignoreCase,
-   ).let { list ->
-      buildAnnotatedString {
-         list.forEach { item ->
-            if (item.isTarget) {
-               onTarget(item.content)
-            } else {
-               append(item.content)
-            }
-         }
-      }
-   }
+  val input = this
+  return buildAnnotatedString {
+    append(input)
+    regex.findAll(input).forEach { item ->
+      onTarget(item)
+    }
+  }
 }
