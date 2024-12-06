@@ -6,7 +6,7 @@ plugins {
 
 val libGroupId = "com.sd.lib.android"
 val libArtifactId = "compose-annotated"
-val libVersion = "1.1.0-rc01"
+val libVersion = "1.1.0-rc02"
 
 android {
   namespace = "com.sd.lib.compose.annotated"
