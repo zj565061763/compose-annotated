@@ -64,7 +64,7 @@ private fun AnnotatedWithRegex(
   modifier: Modifier = Modifier,
   content: String = "1122334455-1122334455",
 ) {
-  val regex = remember { Regex("3") }
+  val regex = remember { "3".toRegex() }
   val annotated = content.fAnnotatedWithRegex(regex)
   Text(
     modifier = modifier,

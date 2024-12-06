@@ -31,10 +31,12 @@ fun CharSequence.fAnnotatedWithTarget(
   if (target.isEmpty()) return initialValue
 
   val regex = remember(target, ignoreCase) {
-    if (ignoreCase) {
-      Regex(target.joinToString(separator = "|"), RegexOption.IGNORE_CASE)
-    } else {
-      Regex(target.joinToString(separator = "|"))
+    target.joinToString(separator = "|").let { reg ->
+      if (ignoreCase) {
+        reg.toRegex(RegexOption.IGNORE_CASE)
+      } else {
+        reg.toRegex()
+      }
     }
   }
 
