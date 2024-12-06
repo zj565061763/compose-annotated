@@ -7,13 +7,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 
 @Composable
-fun CharSequence.fAnnotatedWithTarget(
-  target: List<String>,
+fun CharSequence.fAnnotatedWithTargets(
+  targets: List<String>,
   ignoreCase: Boolean = false,
   targetStyle: SpanStyle = SpanStyle(Color.Red),
 ): AnnotatedString {
-  return fAnnotatedWithTarget(
-    target = target,
+  return fAnnotatedWithTargets(
+    targets = targets,
     ignoreCase = ignoreCase,
     onTarget = { result ->
       addStyle(targetStyle, result.range.first, result.range.last + 1)
@@ -22,18 +22,18 @@ fun CharSequence.fAnnotatedWithTarget(
 }
 
 @Composable
-fun CharSequence.fAnnotatedWithTarget(
-  target: List<String>,
+fun CharSequence.fAnnotatedWithTargets(
+  targets: List<String>,
   ignoreCase: Boolean = false,
   onTarget: AnnotatedString.Builder.(MatchResult) -> Unit,
 ): AnnotatedString {
   val input = this
   val initialValue = remember(input) { AnnotatedString(input.toString()) }
   if (input.isEmpty()) return initialValue
-  if (target.isEmpty()) return initialValue
+  if (targets.isEmpty()) return initialValue
 
-  val regex = remember(target, ignoreCase) {
-    target.joinToString(separator = "|").let { reg ->
+  val regex = remember(targets, ignoreCase) {
+    targets.joinToString(separator = "|").let { reg ->
       if (ignoreCase) {
         reg.toRegex(RegexOption.IGNORE_CASE)
       } else {

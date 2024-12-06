@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sd.demo.compose.annotated.theme.AppTheme
 import com.sd.lib.compose.annotated.fAnnotatedWithRegex
-import com.sd.lib.compose.annotated.fAnnotatedWithTarget
+import com.sd.lib.compose.annotated.fAnnotatedWithTargets
 
 class SampleAnnotatedTargets : ComponentActivity() {
 
@@ -41,18 +41,18 @@ private fun Content(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
-    AnnotatedWithTarget()
+    AnnotatedWithTargets()
     AnnotatedWithRegex()
   }
 }
 
 @Composable
-private fun AnnotatedWithTarget(
+private fun AnnotatedWithTargets(
   modifier: Modifier = Modifier,
   content: String = "1122334455-1122334455",
 ) {
   val target = remember { listOf("2", "4") }
-  val annotated = content.fAnnotatedWithTarget(target)
+  val annotated = content.fAnnotatedWithTargets(target)
   Text(
     modifier = modifier,
     text = annotated,
